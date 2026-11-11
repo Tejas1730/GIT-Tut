@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Description: EC2 Instance Stack
 
 Parameters:
-
   SubnetId:
     Type: String
 
@@ -9,47 +9,19 @@ Parameters:
     Type: String
 
 Resources:
-
   ProcessingEC2:
     Type: AWS::EC2::Instance
     Properties:
-
       InstanceType: t2.micro
-
-      ImageId: ami-0f58b397bc5c1f2e8
-
+      ImageId: ami-09bf9dfeeb1e9adbc
       SubnetId: !Ref SubnetId
-
       SecurityGroupIds:
         - !Ref SecurityGroupId
+      
 
-      Tags:
-        - Key: Name
-          Value: ProcessingServerAWSTemplateFormatVersion: '2010-09-09'
+Outputs:
+  InstanceId:
+    Value: !Ref ProcessingEC2
 
-Parameters:
-
-  SubnetId:
-    Type: String
-
-  SecurityGroupId:
-    Type: String
-
-Resources:
-
-  ProcessingEC2:
-    Type: AWS::EC2::Instance
-    Properties:
-
-      InstanceType: t2.micro
-
-      ImageId: ami-0f58b397bc5c1f2e8
-
-      SubnetId: !Ref SubnetId
-
-      SecurityGroupIds:
-        - !Ref SecurityGroupId
-
-      Tags:
-        - Key: Name
-          Value: ProcessingServer
+  PublicIP:
+    Value: !GetAtt ProcessingEC2.PublicIp

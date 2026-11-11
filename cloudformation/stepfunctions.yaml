@@ -1,111 +1,42 @@
 AWSTemplateFormatVersion: '2010-09-09'
 
 Parameters:
-
   StepRoleArn:
     Type: String
 
 Resources:
-
   StateMachine:
-
     Type: AWS::StepFunctions::StateMachine
-
     Properties:
-
       RoleArn: !Ref StepRoleArn
-
-      DefinitionString: !Sub |
-
+      DefinitionString: |
         {
           "StartAt": "CheckEC2",
-
           "States": {
-
             "CheckEC2": {
-
               "Type": "Task",
-
               "Resource": "arn:aws:states:::aws-sdk:ec2:describeInstances",
-
-              "Next": "RunECSTask"
-
-            },
-
-            "RunECSTask": {
-
-              "Type": "Task",
-
-              "Resource": "arn:aws:states:::ecs:runTask.sync",
-
               "Parameters": {
-
-                "LaunchType": "FARGATE",
-
-                "Cluster": "TransactionCluster",
-
-                "TaskDefinition": "transaction-task"
-
+                "MaxResults": 5
               },
-
-              "End": true
-
-            }
-
-          }
-        }AWSTemplateFormatVersion: '2010-09-09'
-
-Parameters:
-
-  StepRoleArn:
-    Type: String
-
-Resources:
-
-  StateMachine:
-
-    Type: AWS::StepFunctions::StateMachine
-
-    Properties:
-
-      RoleArn: !Ref StepRoleArn
-
-      DefinitionString: !Sub |
-
-        {
-          "StartAt": "CheckEC2",
-
-          "States": {
-
-            "CheckEC2": {
-
-              "Type": "Task",
-
-              "Resource": "arn:aws:states:::aws-sdk:ec2:describeInstances",
-
               "Next": "RunECSTask"
-
             },
-
             "RunECSTask": {
-
               "Type": "Task",
-
               "Resource": "arn:aws:states:::ecs:runTask.sync",
-
               "Parameters": {
-
                 "LaunchType": "FARGATE",
-
                 "Cluster": "TransactionCluster",
-
-                "TaskDefinition": "transaction-task"
-
+                "TaskDefinition": "transaction-task",
+                "NetworkConfiguration": {
+                  "AwsvpcConfiguration": {
+                    "AssignPublicIp": "ENABLED",
+                    "Subnets": ["subnet-062ef0118cd61ce22"],
+                    "SecurityGroups": ["sg-0fac1444287b7ba8f"]
+                  }
+                }
               },
-
               "End": true
-
             }
-
           }
         }

@@ -69,12 +69,12 @@ Resources:
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
 Outputs:
 
-  StepFunctionsRoleArn:
-    Value: !GetAtt StepFunctionsRole.Arn
-    Export:
-      Name: StepFunctionsRoleArn
-
   ECSTaskRoleArn:
     Value: !GetAtt ECSTaskRole.Arn
     Export:
       Name: ECSTaskRoleArn
+
+  StepFunctionsRoleArn:
+    Value: !GetAtt StepFunctionsRole.Arn
+    Export:
+      Name: StepFunctionsRoleArn

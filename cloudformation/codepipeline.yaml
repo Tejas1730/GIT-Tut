@@ -1,0 +1,149 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Resources:
+
+  ArtifactBucket:
+    Type: AWS::S3::Bucket
+
+  CodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: CFNBuildProject
+
+      Artifacts:
+        Type: CODEPIPELINE
+
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:5.0
+        Type: LINUX_CONTAINER
+
+      ServiceRole: YOUR_CODEBUILD_ROLE
+
+      Source:
+        Type: CODEPIPELINE
+
+  Pipeline:
+    Type: AWS::CodePipeline::Pipeline
+
+    Properties:
+
+      Name: UseCasePipeline
+
+      RoleArn: YOUR_PIPELINE_ROLE
+
+      ArtifactStore:
+        Type: S3
+        Location: !Ref ArtifactBucket
+
+      Stages:
+
+        - Name: Source
+
+          Actions:
+
+            - Name: GitHubSource
+
+              ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Provider: GitHub
+                Version: '1'
+
+        - Name: Build
+
+          Actions:
+
+            - Name: BuildTemplates
+
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: '1'
+
+        - Name: Deploy
+
+          Actions:
+
+            - Name: DeployStack
+
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: CloudFormation
+                Version: '1'AWSTemplateFormatVersion: '2010-09-09'
+
+Resources:
+
+  ArtifactBucket:
+    Type: AWS::S3::Bucket
+
+  CodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: CFNBuildProject
+
+      Artifacts:
+        Type: CODEPIPELINE
+
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:5.0
+        Type: LINUX_CONTAINER
+
+      ServiceRole: YOUR_CODEBUILD_ROLE
+
+      Source:
+        Type: CODEPIPELINE
+
+  Pipeline:
+    Type: AWS::CodePipeline::Pipeline
+
+    Properties:
+
+      Name: UseCasePipeline
+
+      RoleArn: YOUR_PIPELINE_ROLE
+
+      ArtifactStore:
+        Type: S3
+        Location: !Ref ArtifactBucket
+
+      Stages:
+
+        - Name: Source
+
+          Actions:
+
+            - Name: GitHubSource
+
+              ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Provider: GitHub
+                Version: '1'
+
+        - Name: Build
+
+          Actions:
+
+            - Name: BuildTemplates
+
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: '1'
+
+        - Name: Deploy
+
+          Actions:
+
+            - Name: DeployStack
+
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: CloudFormation
+                Version: '1'

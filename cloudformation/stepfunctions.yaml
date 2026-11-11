@@ -1,0 +1,111 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+
+  StepRoleArn:
+    Type: String
+
+Resources:
+
+  StateMachine:
+
+    Type: AWS::StepFunctions::StateMachine
+
+    Properties:
+
+      RoleArn: !Ref StepRoleArn
+
+      DefinitionString: !Sub |
+
+        {
+          "StartAt": "CheckEC2",
+
+          "States": {
+
+            "CheckEC2": {
+
+              "Type": "Task",
+
+              "Resource": "arn:aws:states:::aws-sdk:ec2:describeInstances",
+
+              "Next": "RunECSTask"
+
+            },
+
+            "RunECSTask": {
+
+              "Type": "Task",
+
+              "Resource": "arn:aws:states:::ecs:runTask.sync",
+
+              "Parameters": {
+
+                "LaunchType": "FARGATE",
+
+                "Cluster": "TransactionCluster",
+
+                "TaskDefinition": "transaction-task"
+
+              },
+
+              "End": true
+
+            }
+
+          }
+        }AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+
+  StepRoleArn:
+    Type: String
+
+Resources:
+
+  StateMachine:
+
+    Type: AWS::StepFunctions::StateMachine
+
+    Properties:
+
+      RoleArn: !Ref StepRoleArn
+
+      DefinitionString: !Sub |
+
+        {
+          "StartAt": "CheckEC2",
+
+          "States": {
+
+            "CheckEC2": {
+
+              "Type": "Task",
+
+              "Resource": "arn:aws:states:::aws-sdk:ec2:describeInstances",
+
+              "Next": "RunECSTask"
+
+            },
+
+            "RunECSTask": {
+
+              "Type": "Task",
+
+              "Resource": "arn:aws:states:::ecs:runTask.sync",
+
+              "Parameters": {
+
+                "LaunchType": "FARGATE",
+
+                "Cluster": "TransactionCluster",
+
+                "TaskDefinition": "transaction-task"
+
+              },
+
+              "End": true
+
+            }
+
+          }
+        }

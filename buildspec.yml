@@ -1,0 +1,14 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - aws cloudformation validate-template --template-body file://cloudformation/network.yaml
+      - aws cloudformation validate-template --template-body file://cloudformation/iam.yaml
+      - aws cloudformation validate-template --template-body file://cloudformation/ec2.yaml
+      - aws cloudformation validate-template --template-body file://cloudformation/ecs.yaml
+      - aws cloudformation validate-template --template-body file://cloudformation/stepfunctions.yaml
+
+artifacts:
+  files:
+    - '**/*'

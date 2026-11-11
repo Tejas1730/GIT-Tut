@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+
+  SubnetId:
+    Type: String
+
+  SecurityGroupId:
+    Type: String
+
+Resources:
+
+  ProcessingEC2:
+    Type: AWS::EC2::Instance
+    Properties:
+
+      InstanceType: t2.micro
+
+      ImageId: ami-0f58b397bc5c1f2e8
+
+      SubnetId: !Ref SubnetId
+
+      SecurityGroupIds:
+        - !Ref SecurityGroupId
+
+      Tags:
+        - Key: Name
+          Value: ProcessingServerAWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+
+  SubnetId:
+    Type: String
+
+  SecurityGroupId:
+    Type: String
+
+Resources:
+
+  ProcessingEC2:
+    Type: AWS::EC2::Instance
+    Properties:
+
+      InstanceType: t2.micro
+
+      ImageId: ami-0f58b397bc5c1f2e8
+
+      SubnetId: !Ref SubnetId
+
+      SecurityGroupIds:
+        - !Ref SecurityGroupId
+
+      Tags:
+        - Key: Name
+          Value: ProcessingServer

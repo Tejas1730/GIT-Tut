@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  TaskRoleArn:
+    Type: String
+
+Resources:
+
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: TransactionCluster
+
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /ecs/transaction-app
+
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+
+      Family: transaction-task
+
+      Cpu: 256
+
+      Memory: 512
+
+      NetworkMode: awsvpc
+
+      RequiresCompatibilities:
+        - FARGATE
+
+      TaskRoleArn: !Ref TaskRoleArn
+      ExecutionRoleArn: !Ref TaskRoleArn
+
+      ContainerDefinitions:
+
+        - Name: transaction-container
+
+          Image: YOUR_ECR_IMAGE_URI
+
+          Essential: true
+
+          LogConfiguration:
+            LogDriver: awslogs
+
+            Options:
+              awslogs-group: /ecs/transaction-app
+              awslogs-region: ap-south-1
+              awslogs-stream-prefix: ecs

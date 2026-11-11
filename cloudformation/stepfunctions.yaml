@@ -1,14 +1,12 @@
-AWSTemplateFormatVersion: '2010-09-09'
+iAWSTemplateFormatVersion: '2010-09-09'
 
-Parameters:
-  StepRoleArn:
-    Type: String
+
 
 Resources:
   StateMachine:
     Type: AWS::StepFunctions::StateMachine
     Properties:
-      RoleArn: !ImportValue StepRoleArn
+      RoleArn: !ImportValue StepFunctionsRoleArn
       DefinitionString: |
         {
           "StartAt": "CheckEC2",

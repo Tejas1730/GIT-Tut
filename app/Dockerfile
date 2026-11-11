@@ -1,0 +1,13 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY processor.py .
+
+CMD ["python", "processor.py"]FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY processor.py .
+
+CMD ["python", "processor.py"]

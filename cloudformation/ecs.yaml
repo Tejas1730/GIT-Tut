@@ -46,3 +46,14 @@ Resources:
               awslogs-group: /ecs/transaction-app
               awslogs-region: us-east-1
               awslogs-stream-prefix: ecs
+Outputs:
+
+  ECSClusterName:
+    Value: !Ref ECSCluster
+    Export:
+      Name: ECSClusterName
+
+  ECSTaskDefinition:
+    Value: !Ref TaskDefinition
+    Export:
+      Name: ECSTaskDefinition

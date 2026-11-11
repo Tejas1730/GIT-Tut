@@ -1,42 +1,59 @@
 AWSTemplateFormatVersion: '2010-09-09'
 
-
-
 Resources:
+
   StateMachine:
     Type: AWS::StepFunctions::StateMachine
+
     Properties:
+      StateMachineName: TransactionWorkflow
+
       RoleArn: !ImportValue StepFunctionsRoleArn
-      DefinitionString: |
-        {
-          "StartAt": "CheckEC2",
-          "States": {
-            "CheckEC2": {
-              "Type": "Task",
-              "Resource": "arn:aws:states:::aws-sdk:ec2:describeInstances",
-              "Parameters": {
-                "MaxResults": 5
+
+      DefinitionString: !Sub
+        - |
+          {
+            "StartAt": "CheckEC2",
+            "States": {
+              "CheckEC2": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::aws-sdk:ec2:describeInstances",
+                "Parameters": {
+                  "MaxResults": 5
+                },
+                "Next": "RunECSTask"
               },
-              "Next": "RunECSTask"
-            },
-            "RunECSTask": {
-              "Type": "Task",
-              "Resource": "arn:aws:states:::ecs:runTask.sync",
-              "Parameters": {
-                "LaunchType": "FARGATE",
-                "Cluster": "TransactionCluster",
-                "TaskDefinition": "transaction-task",
-                "NetworkConfiguration": {
-                  "AwsvpcConfiguration": {
-                    "AssignPublicIp": "ENABLED",
-                    "Subnets": ["${SubnetId}"],
-                    "SecurityGroups": ["${SecurityGroup}"]
+
+              "RunECSTask": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::ecs:runTask.sync",
+
+                "Parameters": {
+                  "LaunchType": "FARGATE",
+
+                  "Cluster": "${ClusterName}",
+
+                  "TaskDefinition": "${TaskDefinition}",
+
+                  "NetworkConfiguration": {
+                    "AwsvpcConfiguration": {
+                      "AssignPublicIp": "ENABLED",
+                      "Subnets": [
+                        "${SubnetId}"
+                      ],
+                      "SecurityGroups": [
+                        "${SecurityGroup}"
+                      ]
+                    }
                   }
-                }
-              },
-              "End": true
+                },
+
+                "End": true
+              }
             }
           }
-        }
-       - SubnetId: !ImportValue PublicSubnetId
-         SecurityGroup: !ImportValue ApplicationSGId
+
+        - SubnetId: !ImportValue PublicSubnetId
+          SecurityGroup: !ImportValue ApplicationSGId
+          ClusterName: !ImportValue ECSClusterName
+          TaskDefinition: !ImportValue ECSTaskDefinition

@@ -14,9 +14,10 @@ Resources:
     Properties:
       InstanceType: t2.micro
       ImageId: ami-09bf9dfeeb1e9adbc
-      SubnetId: !Ref SubnetId
+      SubnetId: !ImportValue PublicSubnetId
+
       SecurityGroupIds:
-        - !Ref SecurityGroupId
+        - !ImportValue ApplicationSGId
       
 
 Outputs:

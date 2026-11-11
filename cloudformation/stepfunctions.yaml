@@ -8,7 +8,7 @@ Resources:
   StateMachine:
     Type: AWS::StepFunctions::StateMachine
     Properties:
-      RoleArn: !Ref StepRoleArn
+      RoleArn: !ImportValue StepRoleArn
       DefinitionString: |
         {
           "StartAt": "CheckEC2",

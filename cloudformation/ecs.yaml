@@ -31,8 +31,8 @@ Resources:
       RequiresCompatibilities:
         - FARGATE
 
-      TaskRoleArn: !Ref TaskRoleArn
-      ExecutionRoleArn: !Ref TaskRoleArn
+      TaskRoleArn: !ImportValue TaskRoleArn
+      ExecutionRoleArn: !ImportValue TaskRoleArn
 
       ContainerDefinitions:
 

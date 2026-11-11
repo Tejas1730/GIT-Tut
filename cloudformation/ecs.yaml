@@ -38,7 +38,7 @@ Resources:
 
         - Name: transaction-container
 
-          Image: YOUR_ECR_IMAGE_URI
+          Image: 446476244341.dkr.ecr.us-east-1.amazonaws.com/transaction-processor:latest
 
           Essential: true
 

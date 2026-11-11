@@ -29,8 +29,8 @@ Resources:
                 "NetworkConfiguration": {
                   "AwsvpcConfiguration": {
                     "AssignPublicIp": "ENABLED",
-                    "Subnets": ["subnet-062ef0118cd61ce22"],
-                    "SecurityGroups": ["sg-0fac1444287b7ba8f"]
+                    "Subnets": ["${SubnetId}"],
+                    "SecurityGroups": ["${SecurityGroup}"]
                   }
                 }
               },
@@ -38,3 +38,5 @@ Resources:
             }
           }
         }
+       - SubnetId: !ImportValue PublicSubnetId
+         SecurityGroup: !ImportValue ApplicationSGId

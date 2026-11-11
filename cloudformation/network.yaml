@@ -55,8 +55,12 @@ Outputs:
   VPCId:
     Value: !Ref VPC
 
-  SubnetId:
+  PublicSubnetId:
     Value: !Ref PublicSubnet
+    Export:
+      Name: PublicSubnetId
 
   SecurityGroupId:
     Value: !Ref ApplicationSG
+    Export:
+      Name: ApplicationSGId

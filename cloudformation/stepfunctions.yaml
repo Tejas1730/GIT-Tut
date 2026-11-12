@@ -14,13 +14,37 @@ Resources:
         - |
           {
             "StartAt": "CheckEC2",
+
             "States": {
+
               "CheckEC2": {
                 "Type": "Task",
                 "Resource": "arn:aws:states:::aws-sdk:ec2:describeInstances",
                 "Parameters": {
                   "MaxResults": 5
                 },
+                "ResultPath": "$.EC2",
+                "Next": "ValidateEC2"
+              },
+
+              "ValidateEC2": {
+                "Type": "Choice",
+                "Choices": [
+                  {
+                    "Variable": "$.EC2.Reservations[0].Instances[0].State.Name",
+                    "StringEquals": "running",
+                    "Next": "PrepareTask"
+                  }
+                ],
+                "Default": "EC2NotRunning"
+              },
+
+              "PrepareTask": {
+                "Type": "Pass",
+                "Result": {
+                  "JobStatus": "Ready"
+                },
+                "ResultPath": "$.Job",
                 "Next": "RunECSTask"
               },
 
@@ -29,6 +53,7 @@ Resources:
                 "Resource": "arn:aws:states:::ecs:runTask.sync",
 
                 "Parameters": {
+
                   "LaunchType": "FARGATE",
 
                   "Cluster": "${ClusterName}",
@@ -48,8 +73,43 @@ Resources:
                   }
                 },
 
-                "End": true
+                "ResultPath": "$.ECS",
+
+                "Catch": [
+                  {
+                    "ErrorEquals": ["States.ALL"],
+                    "Next": "ECSTaskFailed"
+                  }
+                ],
+
+                "Next": "ProcessResults"
+              },
+
+              "ProcessResults": {
+                "Type": "Pass",
+                "Result": {
+                  "Status": "ECS Processing Completed"
+                },
+                "ResultPath": "$.Result",
+                "Next": "Success"
+              },
+
+              "Success": {
+                "Type": "Succeed"
+              },
+
+              "EC2NotRunning": {
+                "Type": "Fail",
+                "Error": "EC2NotRunning",
+                "Cause": "EC2 instance is not running"
+              },
+
+              "ECSTaskFailed": {
+                "Type": "Fail",
+                "Error": "ECSTaskFailed",
+                "Cause": "Fargate task execution failed"
               }
+
             }
           }
 

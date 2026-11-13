@@ -21,7 +21,10 @@ Resources:
                 "Type": "Task",
                 "Resource": "arn:aws:states:::aws-sdk:ec2:describeInstances",
                 "Parameters": {
-                  "MaxResults": 5
+                  "Filters": [
+                    { "Name": "tag:CreatedBy", "Values": ["TransactionProcessorPipeline"] },
+                    { "Name": "instance-state-name", "Values": ["pending", "running"] }
+                  ]
                 },
                 "ResultPath": "$.EC2",
                 "Next": "ValidateEC2"

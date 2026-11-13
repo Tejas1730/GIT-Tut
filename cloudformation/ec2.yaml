@@ -12,6 +12,11 @@ Resources:
 
       SecurityGroupIds:
         - !ImportValue ApplicationSGId
+      Tags:
+        - Key: Name
+          Value: ProcessingEC2
+        - Key: CreatedBy
+          Value: TransactionProcessorPipeline
       
 
 Outputs:

@@ -13,16 +13,37 @@ Resources:
             Principal:
               Service: states.amazonaws.com
             Action: sts:AssumeRole
-
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonECS_FullAccess
         - arn:aws:iam::aws:policy/AmazonEC2FullAccess
+      Policies:
+        - PolicyName: StepFunctionsRunEcsTask
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ecs:RunTask
+                  - ecs:StopTask
+                  - ecs:DescribeTasks
+                Resource: "*"
+              - Effect: Allow
+                Action: iam:PassRole
+                Resource: !GetAtt ECSTaskRole.Arn
+              - Effect: Allow
+                Action:
+                  - events:PutTargets
+                  - events:PutRule
+                  - events:DescribeRule
+                Resource: !Sub arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/StepFunctionsGetEventsForECSTaskRule
+              - Effect: Allow
+                Action: ec2:DescribeInstances
+                Resource: "*"
 
   ECSTaskRole:
     Type: AWS::IAM::Role
     Properties:
       RoleName: ECSTaskRole
-
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -30,43 +51,10 @@ Resources:
             Principal:
               Service: ecs-tasks.amazonaws.com
             Action: sts:AssumeRole
-
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccessAWSTemplateFormatVersion: '2010-09-09'
-
-Resources:
-
-  StepFunctionsRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: StepFunctionsExecutionRole
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: states.amazonaws.com
-            Action: sts:AssumeRole
-
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AmazonECS_FullAccess
-        - arn:aws:iam::aws:policy/AmazonEC2FullAccess
-
-  ECSTaskRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: ECSTaskRole
-
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: ecs-tasks.amazonaws.com
-            Action: sts:AssumeRole
-
-      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+
 Outputs:
 
   ECSTaskRoleArn:
